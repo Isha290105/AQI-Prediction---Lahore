@@ -1,0 +1,38 @@
+# Environment variables
+.env
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Data files
+data/*.csv
+data/*.json
+data/raw/*.csv
+
+# Model files (optional: keep best_model.pkl if you want to commit it)
+# models/*.pkl
+# models/*.h5
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log

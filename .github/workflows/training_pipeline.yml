@@ -1,0 +1,44 @@
+name: Daily Training Pipeline
+
+on:
+  schedule:
+    - cron: '0 2 * * *'   # Runs daily at 2 AM UTC
+  workflow_dispatch:       # Allow manual trigger
+
+jobs:
+  run-training:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write      # needed to push model files back to repo as fallback
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Download historical data (backfill fallback)
+        continue-on-error: true
+        env:
+          AQICN_TOKEN: ${{ secrets.AQICN_TOKEN }}
+        run: python pipelines/backfill.py
+
+      - name: Run training pipeline
+        env:
+          AQICN_TOKEN: ${{ secrets.AQICN_TOKEN }}
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        run: python pipelines/training_pipeline.py
+
+      - name: Commit trained model artifacts to repo (fallback)
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f models/best_model.pkl models/scaler.pkl models/evaluation_results.csv models/shap_summary.png models/lime_summary.png models/lime_explanation_*.html || true
+          git diff --staged --quiet || git commit -m "chore: update trained model artifacts [skip ci]"
+          git push

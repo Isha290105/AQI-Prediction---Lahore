@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lahore AQI Predictor - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <main class="page-shell">
+        <header class="main-header">
+            <div class="brand-row">
+                <div class="brand-icon">
+                    <span class="material-symbols-outlined">eco</span>
+                </div>
+                <h1>Lahore AQI Predictor</h1>
+            </div>
+            <div class="updated-wrap">
+                <p id="last-updated">Last updated: --</p>
+                <span></span>
+            </div>
+        </header>
+
+        <nav class="tabs" aria-label="Dashboard views">
+            <div class="tab-track">
+                <button class="tab-btn active" data-tab="current" type="button">Current</button>
+                <button class="tab-btn" data-tab="prediction" type="button">24h Forecast</button>
+                <button class="tab-btn" data-tab="forecast" type="button">3-Day Forecast</button>
+            </div>
+        </nav>
+
+        <section id="alert-section" class="alert-card hidden" aria-live="polite">
+            <span id="alert-icon" class="material-symbols-outlined">warning</span>
+            <div>
+                <h2 id="alert-title">Attention Advised</h2>
+                <p id="alert-message">Loading air quality status...</p>
+            </div>
+        </section>
+
+        <section class="tab-content active" id="current">
+            <div class="dashboard-grid">
+                <article class="glass-card aqi-panel">
+                    <span class="material-symbols-outlined watermark">air</span>
+                    <div class="section-kicker">
+                        <span class="pulse-dot"></span>
+                        <h2>Live Air Quality</h2>
+                    </div>
+                    <div class="gauge" aria-label="Current AQI gauge">
+                        <div class="gauge-arc"></div>
+                        <div class="gauge-mask"></div>
+                        <div class="gauge-value-wrap">
+                            <p id="aqi-value">--</p>
+                            <span id="aqi-label">Loading</span>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <p class="quote">The forest breathes with us. Keep it clean.</p>
+                </article>
+
+                <article class="glass-card metrics-panel">
+                    <div class="section-heading">
+                        <div>
+                            <span class="material-symbols-outlined">query_stats</span>
+                        </div>
+                        <h2>Atmospheric Breakdown</h2>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric" data-max="180">
+                            <div class="metric-top">
+                                <p>Particulate Matter 2.5</p>
+                                <span id="pm25-status">--</span>
+                            </div>
+                            <div class="metric-value-row">
+                                <strong id="pm25">--</strong>
+                                <span>ug/m3</span>
+                            </div>
+                            <div class="meter"><span id="pm25-bar"></span></div>
+                        </div>
+                        <div class="metric" data-max="220">
+                            <div class="metric-top">
+                                <p>Particulate Matter 10</p>
+                                <span id="pm10-status">--</span>
+                            </div>
+                            <div class="metric-value-row">
+                                <strong id="pm10">--</strong>
+                                <span>ug/m3</span>
+                            </div>
+                            <div class="meter"><span id="pm10-bar"></span></div>
+                        </div>
+                        <div class="metric" data-max="120">
+                            <div class="metric-top">
+                                <p>Nitrogen Dioxide (NO2)</p>
+                                <span id="no2-status">--</span>
+                            </div>
+                            <div class="metric-value-row">
+                                <strong id="no2">--</strong>
+                                <span>ug/m3</span>
+                            </div>
+                            <div class="meter"><span id="no2-bar"></span></div>
+                        </div>
+                        <div class="metric" data-max="160">
+                            <div class="metric-top">
+                                <p>Ozone (O3)</p>
+                                <span id="o3-status">--</span>
+                            </div>
+                            <div class="metric-value-row">
+                                <strong id="o3">--</strong>
+                                <span>ug/m3</span>
+                            </div>
+                            <div class="meter"><span id="o3-bar"></span></div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <div class="support-grid">
+                <article class="glass-card compact-stat">
+                    <span class="material-symbols-outlined">device_thermostat</span>
+                    <div>
+                        <p>Temperature</p>
+                        <strong id="temperature">-- C</strong>
+                    </div>
+                </article>
+                <article class="glass-card compact-stat">
+                    <span class="material-symbols-outlined">humidity_percentage</span>
+                    <div>
+                        <p>Humidity</p>
+                        <strong id="humidity">-- %</strong>
+                    </div>
+                </article>
+                <article class="glass-card compact-stat">
+                    <span class="material-symbols-outlined">airwave</span>
+                    <div>
+                        <p>Wind Speed</p>
+                        <strong id="wind-speed">-- km/h</strong>
+                    </div>
+                </article>
+                <article class="glass-card compact-stat">
+                    <span class="material-symbols-outlined">speed</span>
+                    <div>
+                        <p>Pressure</p>
+                        <strong id="pressure">-- hPa</strong>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="tab-content" id="prediction">
+            <div class="forecast-grid">
+                <article class="glass-card prediction-card">
+                    <div class="section-heading">
+                        <div><span class="material-symbols-outlined">model_training</span></div>
+                        <h2>24h Model Forecast</h2>
+                    </div>
+                    <div class="prediction-values">
+                        <div>
+                            <p>Predicted PM2.5</p>
+                            <strong id="pred-pm25">-- ug/m3</strong>
+                        </div>
+                        <div>
+                            <p>Predicted AQI</p>
+                            <strong id="pred-aqi">--</strong>
+                        </div>
+                        <div>
+                            <p>Category</p>
+                            <strong id="pred-label">--</strong>
+                        </div>
+                    </div>
+                </article>
+                <article class="glass-card chart-card">
+                    <div class="card-title-row">
+                        <h2>PM2.5 vs AQI Outlook</h2>
+                        <span>Next 24 hours</span>
+                    </div>
+                    <canvas id="predictionChart"></canvas>
+                </article>
+            </div>
+        </section>
+
+        <section class="tab-content" id="forecast">
+            <div class="forecast-grid">
+                <article class="glass-card chart-card wide">
+                    <div class="card-title-row">
+                        <h2>Hourly AQI Trend</h2>
+                        <span>Next 72 hours</span>
+                    </div>
+                    <canvas id="hourlyChart"></canvas>
+                </article>
+                <article class="glass-card chart-card">
+                    <div class="card-title-row">
+                        <h2>Pollutant Mix</h2>
+                        <span>Hourly average</span>
+                    </div>
+                    <canvas id="pollutantChart"></canvas>
+                </article>
+            </div>
+            <article class="glass-card daily-card">
+                <div class="card-title-row">
+                    <h2>Daily Summary</h2>
+                    <span>3-day forecast</span>
+                </div>
+                <div id="daily-forecast" class="daily-forecast"></div>
+            </article>
+        </section>
+    </main>
+
+    <div class="side-accent right"></div>
+    <div class="side-accent left"></div>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+.git
+.env
+.github
+notebooks
+pipelines
+data
+__pycache__
+**/__pycache__
+**/*.pyc
+*.swp *.swo *.swn
+.vscode
+.devcontainer
+report.md
+AQI_predict-1.pdf
+validate_setup.py
+models/lstm_model*.h5
+models/lime_explanation_*.html
