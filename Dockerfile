@@ -21,4 +21,4 @@ COPY . .
 EXPOSE 7860
 
 # Run the app
-CMD ["python", "app.py"]
+CMD ["python", "main.py"]
